@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="ms"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eHadir v2 — Daftar Hadir</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css?v=2026-11-21"><meta name="theme-color" content="#2160a5"></head><body>
+<main><div class="cover">
+  <div id="themehost" class="themehost"></div>
+  <img id="orglogo" class="orglogo" alt="logo sekolah" style="display:none">
+  <div class="seal" id="seal"><span>eH</span></div>
+  <h1>Daftar <em>Hadir</em></h1>
+  <p class="sub">eHadir v2 · QR · Rekod Kehadiran · Audit</p>
+  <form class="card" id="f">
+    <p class="kicker">Log masuk</p>
+    <label class="field"><i data-lucide="user"></i><input id="u" placeholder="Nama pengguna" autocomplete="username"></label>
+    <label class="field"><i data-lucide="lock"></i><input id="p" type="password" placeholder="Kata laluan" autocomplete="current-password"></label>
+    <button class="btn big" id="go" type="submit"><i data-lucide="log-in"></i> Masuk Daftar</button>
+    <p class="lerr" id="errbox" hidden><i data-lucide="circle-x"></i><span id="err"></span></p>
+  </form>
+  <div class="chips" id="demochips" hidden>
+    <span class="chip"><i data-lucide="graduation-cap"></i> Sebarang masalah, hubungi : <b>01127706731 (admin)</b></span>
+    <span class="chip"></i> Contoh : <b>Lupa password atau lupa username</b></span>
+    
+  </div>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="/js/ui.js"></script>
+<script>
+const dash = r => r === 'admin' ? '/admin.html' : r === 'teacher' ? '/teacher.html' : '/student.html';
+function showErr(t) { err.textContent = t; errbox.hidden = false; }
+async function login(e) {
+  e.preventDefault();
+  errbox.hidden = true;
+  const b = document.getElementById('go'), old = b.innerHTML;
+  b.disabled = true; b.innerHTML = '<i data-lucide="loader-circle" class="spin"></i> Memeriksa…';
+  if (window.icons) icons(b);
+  try {
+    const r = await fetch('/api/login.php', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u.value, password: p.value }) });
+    const j = await r.json();
+    if (j.error) { showErr(j.error); b.disabled = false; b.innerHTML = old; if (window.icons) icons(b); return; }
+    location.href = dash(j.role);
+  } catch (ex) {
+    showErr('Ralat rangkaian — cuba lagi.');
+    b.disabled = false; b.innerHTML = old; if (window.icons) icons(b);
+  }
+}
+f.addEventListener('submit', login);
+fetch('/api/org.php').then(r => r.json()).then(o => {
+  if (o.school_name) document.querySelector('.sub').textContent = o.school_name + (o.school_motto ? ' · ' + o.school_motto : '');
+  if (o.logo) { const im = document.getElementById('orglogo'); im.src = o.logo; im.style.display = 'block'; document.getElementById('seal').style.display = 'none'; }
+  if (o.demo_seed) document.getElementById('demochips').hidden = false; // FIX: kread demo hanya bila mod demo aktif
+}).catch(() => {});
+fetch('/api/me.php').then(r => r.json()).then(j => { if (j.role) location.href = dash(j.role); }).catch(() => {});
+</script></body></html>

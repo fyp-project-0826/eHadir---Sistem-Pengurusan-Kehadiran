@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="ms"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<title>eHadir — Imbas QR</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css?v=2026-11-21">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script></head>
+<body class="scanbody">
+<div class="scanwrap">
+  <video id="v" autoplay playsinline muted></video>
+  <div class="scandim"></div>
+  <div class="frame"><i></i><i></i><i></i><i></i><div class="scanline"></div></div>
+  <div class="scanhead">
+    <a href="/student.html" class="scancancel" aria-label="Batal"><i data-lucide="x"></i></a>
+    <b>Arahkan kamera ke QR guru</b>
+    <span></span>
+  </div>
+  <div class="scanchip" id="gps"><i data-lucide="satellite-dish"></i><span>Memohon izin GPS…</span></div>
+</div>
+<div id="res"></div>
+<script src="/js/csrf.js"></script><script src="/js/ui.js"></script><script src="/js/scan.js"></script></body></html>

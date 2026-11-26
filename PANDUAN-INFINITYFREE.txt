@@ -1,0 +1,91 @@
+PANDUAN PASANG eHADIR DI INFINITYFREE (Hosting Percuma PHP + MySQL)
+====================================================================
+
+Apa dalam zip ini:
+  • semua fail aplikasi (index.html, admin.html, api/, js/, css/, app/)
+    → naikkan terus ke folder public_html
+  • import/schema.sql   → struktur pangkalan data (WAJIB import)
+  • import/data-demo.sql → data demo (PILIHAN: pengguna, kelas, kehadiran
+    seperti di demo). Kalau tak import, aplikasi mula kosong dan anda
+    tambah sendiri pengguna melalui panel admin.
+  • import/data-real.sql → DATA SEBENAR INTRA yang dipindahkan dari sistem
+    lama (18 pengguna: 2 admin, 2 guru, 14 pelajar + kelas, sesi, kehadiran
+    & cuti). IMPORT INI SAHAJA jika anda mula data sebenar — jangan import
+    data-demo.sql sekali (pilih satu).
+  • PANDUAN-INFINITYFREE.txt → fail ini
+
+LANGKAH 1 — Daftar & buat tapak
+  1. Pergi infinityfree.com → Daftar (verifikasi emel).
+  2. Create Account / "Create Website" → pilih subdomain percuma
+     (cth: ehadir.infinityfreeapp.com) atau domain sendiri.
+  3. Ada pemeriksaan bot/rangka — isi sahaja, percuma.
+
+LANGKAH 2 — Buat pangkalan data MySQL
+  1. Dalam Control Panel (VistaPanel) → "MySQL Databases".
+  2. Create Database. CATATKAN 4 benda ini (keluar selepas create):
+       DB name   (cth if0_12345678_ehadir)
+       DB user   (cth if0_12345678)
+       DB host   (cth sql100.infinityfree.com — BUKAN localhost)
+       password  (yang anda tetapkan masa create)
+
+LANGKAH 3 — Import struktur (dan data demo)
+  1. Control Panel → butang phpMyAdmin.
+  2. Kiri: klik nama DB anda (jangan import tanpa pilih DB).
+  3. tab Import → Choose File → import/schema.sql → Go.
+  4. (Pilihan) ulang langkah sama untuk import/data-demo.sql (data demo),
+     ATAU import/data-real.sql (data sebenar INTRA dari sistem lama).
+
+LANGKAH 4 — Naik fail aplikasi
+  Cara A (File Manager dalam talian, paling mudah):
+    1. Control Panel → Online File Manager → masuk public_html.
+    2. Upload zip ini → klik kanan → Extract.
+    3. PASTIKAN index.html berada TERUS di dalam public_html
+       (jangan biarkan berlapis ehadir/htdocs/index.html — jika berlapis,
+       pilih semua → Move ke public_html, dan padam folder kosong).
+  Cara B (FTP, zis FileZilla):
+    1. Control Panel → FTP Details (host, username, password = yang
+       sama dengan MySQL tapi berbeza — catat dari panel).
+    2. Upload KANDUNGAN folder aplikasi ke public_html.
+  Nota: fail .htaccess sudah included — folder app/ (config + uploads)
+  dilindung daripada akses web secara automatik.
+
+LANGKAH 5 — Tetapkan connection DB
+  1. File Manager → public_html/app/config.php → Edit.
+  2. Ganti nilai:
+       'DB_HOST' => 'sql100.infinityfree.com',   (host dari Langkah 2)
+       'DB_NAME' => 'if0_12345678_ehadir',
+       'DB_USER' => 'if0_12345678',
+       'DB_PASS' => 'password_anda',
+       'RECEIPT_KEY' => 'rentetan rawak panjang' (TUKAR! jangan biarkan
+         nilai demo — ini kunci HMAC resit kehadiran).
+  3. Simpan. (config.local.php TIADA dalam zip ini — jangan upload.)
+
+LANGKAH 6 — SSL + ujian
+  1. Control Panel → "SSL Certificates" → pasang Let's Encrypt percuma
+     untuk subdomain anda, dan aktifkan "Force HTTPS".
+     WAJIB: kamera/geolocation browser hanya berfungsi atas HTTPS.
+  2. Buka tapak → login:
+       admin / admin123
+       siti / siti123 (guru)   ·   alang / pelajar123 (pelajar)
+     (hanya jika import data-demo; jika tidak, create pengguna di panel)
+  3. SEGERA tukar kata laluan admin: Pengguna → Pentadbir → Edit.
+     (Jika guna data-real.sql: login admin = SYSADMIN / SUBADMIN, guru =
+     T001/T002, pelajar = nombor KP masing-masing. Kata laluan sama seperti
+     sistem lama — tukar semua, terutamanya admin.)
+     Nota: fail MC dari sistem lama TIDAK termasuk dalam pemindahan —
+     rekod cuti masih ada, tetapi gambar MC perlu dimuat naik semula
+     jika diperlukan.
+  4. Ujian pantas: buka sesi QR sebagai guru, scan sebagai pelajar,
+    semak Papan Pemuka.
+
+HAD PERCUMA INFINITYFREE (jangan terkejut):
+  • Paparan "bot check" pada lawatan pertama dari setiap pelawat.
+  • Tapak boleh "tidur" (suspend sementara) jika trafik tinggi/longgar —
+    normal untuk percuma, pulih sendiri.
+  • Tiada SSH, tiada cron job (eHadir tak perlu keduanya — OK).
+  • Saiz upload had ~20MB (zip ini jauh lebih kecil).
+  • phpMyAdmin kadang lambat — cuba lagi.
+
+Kalau jumpa ralat "Pangkalan data tidak dapat dihubungi":
+  periksa 4 nilai di config.php (terutamanya DB_HOST — InfinityFree
+  TIDAK guna 'localhost'; gunakan host sql### yang diberi).

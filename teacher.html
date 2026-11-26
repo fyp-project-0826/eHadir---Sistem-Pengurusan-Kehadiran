@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="ms"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eHadir — Papan Guru</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css?v=2026-11-21"><meta name="theme-color" content="#2160a5">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script></head><body>
+<div class="dash">
+  <aside class="sidebar">
+    <div class="logo">e<em>H</em>adir</div>
+    <div class="role">Papan Guru</div>
+    <button class="navbtn on" data-sec="t-over"><span class="ic"><i data-lucide="layout-dashboard"></i></span><span class="lbl"><b class="lf">Ringkasan</b><b class="ls">Ringkasan</b></span></button>
+    <button class="navbtn" data-sec="t-classes"><span class="ic"><i data-lucide="school"></i></span><span class="lbl"><b class="lf">Kelas &amp; Sesi QR</b><b class="ls">Kelas</b></span></button>
+    <button class="navbtn" data-sec="t-cal"><span class="ic"><i data-lucide="calendar-days"></i></span><span class="lbl"><b class="lf">Kalendar Kelas</b><b class="ls">Kalendar</b></span></button>
+    <button class="navbtn" data-sec="t-leave"><span class="ic"><i data-lucide="cloud-sun-rain"></i></span><span class="lbl"><b class="lf">Cuti</b><b class="ls">Cuti</b></span> <em id="lv_badge" style="display:none"></em></button>
+    <button class="navbtn" data-sec="t-report"><span class="ic"><i data-lucide="file-text"></i></span><span class="lbl"><b class="lf">Laporan</b><b class="ls">Laporan</b></span></button>
+    <button class="navbtn" data-sec="t-import"><span class="ic"><i data-lucide="upload"></i></span><span class="lbl"><b class="lf">Import</b><b class="ls">Import</b></span></button>
+    <div class="spacer"></div>
+    <div class="userbox"><b id="tname"></b><a href="#" id="logout"><i data-lucide="log-out"></i>Keluar</a></div>
+  </aside>
+  <div class="dashmain">
+    <div class="pagehead"><h2>Selamat datang, <span id="tname2" class="serif"></span></h2><span class="when" id="tdate"></span></div>
+
+    <section class="sec on" id="sec-t-over">
+      <div class="sc" id="tstats"><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div></div>
+      <div class="datacard"><h3><i data-lucide="clock"></i>Kiraan kehadiran hari ini <span class="muted" style="font-weight:400;font-size:.72rem">· dikemas kini automatik · Asia/Kuala_Lumpur</span></h3>
+        <div id="livecount" data-aa></div></div>
+      <div class="datacard"><h3><i data-lucide="calendar-days"></i>Sesi hari ini</h3><div id="todaysum"></div></div>
+    </section>
+
+    <section class="sec" id="sec-t-classes">
+      <div id="qr" class="datacard" style="display:none">
+        <div class="row"><div class="grow"><p class="kicker">Sesi sedang bersiaran</p><h3 id="qrttl" style="margin:0"></h3></div><span class="badge live">Buka</span></div>
+        <div id="qrbox"></div>
+        <div class="ttlbar"><i id="qrb" style="width:100%"></i></div>
+        <p class="muted" style="margin-top:10px">Token QR bertukar setiap 60 saat · <span id="qrgeo">pelajar perlu dalam lingkungan jarak imbas kelas anda.</span></p>
+        <div style="margin-top:14px"><button class="btn red big" id="closebtn">Tutup Sesi &amp; Selesai</button></div>
+      </div>
+      <div id="classes"></div>
+    </section>
+
+    <section class="sec" id="sec-t-cal">
+      <div class="datacard" data-kalendar></div>
+    </section>
+    <dialog id="ev_dlg"></dialog>
+
+    <section class="sec" id="sec-t-leave">
+      <div class="datacard tblcards"><h3><i data-lucide="cloud-sun-rain"></i>Permohonan cuti kelas saya</h3><div id="leavelist"></div></div>
+    </section>
+
+    <section class="sec" id="sec-t-report">
+      <div class="datacard"><h3><i data-lucide="file-text"></i>Laporan kehadiran kelas</h3>
+        <div class="row" style="gap:10px;margin-bottom:12px">
+          <select id="rp_cls" style="max-width:240px"></select>
+          <label class="muted">dari <input type="date" id="rp_from"></label>
+          <label class="muted">hingga <input type="date" id="rp_to"></label>
+          <button class="btn ghost" id="rp_go">Jana</button>
+          <a class="btn ghost" id="rp_csv" href="#" style="text-decoration:none"><i data-lucide="download"></i>CSV</a>
+          <button class="btn" id="rp_pdf"><i data-lucide="file-text"></i>Jana PDF</button>
+        </div>
+        <span id="rp_msg" class="muted" style="font-size:.75rem"></span>
+        <div id="rp_out"></div></div>
+    </section>
+
+    <section class="sec" id="sec-t-import">
+      <div class="datacard"><h3><i data-lucide="upload"></i>Import pelajar ke kelas saya (Excel)</h3>
+        <button class="btn sm ghost tpl" data-tpl="students_own" style="float:right;margin-top:-34px"><i data-lucide="download"></i>Muat Turun Template</button>
+        <p class="muted" style="margin-bottom:8px">Lajur: <span class="mono">name, username, password, parent_contact</span>. Kosongkan lajur password untuk kata laluan rawak (dipaparkan sekali selepas import).</p>
+        <select id="im_cls" style="margin-bottom:10px;max-width:260px"></select><br>
+        <input type="file" id="xl_stud" accept=".xlsx,.xls,.csv" style="margin-bottom:10px">
+        <button class="btn" id="xl_stud_go">Import</button> <span id="xl_stud_msg" class="muted"></span>
+        <div id="xl_stud_err"></div></div>
+    </section>
+  </div>
+</div>
+<script src="/vendor/xlsx.full.min.js"></script>
+<script src="/vendor/jspdf.umd.min.js"></script>
+<script src="/vendor/jspdf.plugin.autotable.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script type="module">import aa from"https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/+esm";window.autoAnimate=aa;</script>
+<script src="/js/csrf.js"></script><script src="/js/pdf.js"></script><script src="/js/templates.js"></script><script src="/js/ui.js"></script><script src="/js/calendar.js?v=2026-11-21"></script><script src="/js/teacher.js"></script></body></html>

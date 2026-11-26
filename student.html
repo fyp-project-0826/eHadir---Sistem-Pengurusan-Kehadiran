@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="ms"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eHadir — Pelajar</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css?v=2026-11-21"><meta name="theme-color" content="#2160a5"></head><body>
+<div class="top"><div class="brand">e<em>H</em>adir<small>Papan Pelajar</small></div>
+<div class="who"><span id="sname"></span><a href="#" id="logout">Keluar</a></div></div>
+<main>
+  <div id="crit" class="notice" style="display:none"></div>
+  <div class="card hero" style="text-align:center">
+    <p class="kicker">Waktu kehadiran</p>
+    <button class="btn big" id="scanbtn"><i data-lucide="camera"></i> Imbas QR Hadir</button>
+  </div>
+    <div class="card"><h3>Pengumuman</h3><div id="anns"></div></div>
+  <div id="days"></div>
+  <div class="card tblcards"><h3>Jadual hari ini</h3><div id="slots"></div></div>
+  <div class="card tblcards"><h3>Rekod Kehadiran Saya</h3>
+    <p class="muted" style="margin-bottom:8px">Setiap rekod ditandatangani pelayan — salinan guru &amp; pelayan sepadan.</p>
+    <table id="hist"><tr><th>Tarikh</th><th>MP</th><th>Masa</th><th>Jarak</th></tr></table></div>
+  <div class="card"><h3><i data-lucide="calendar-days"></i> Mohon Cuti</h3>
+    <p class="muted" style="margin-bottom:8px">Pilih sesi yang anda ponteng, atau mohon ikut tarikh. MC/sokongan boleh dilampirkan (PDF/JPG/PNG ≤2MB).</p>
+    <select id="lv_sess" style="margin-bottom:8px"><option value="">— sesi yang terlepas —</option></select>
+    <input type="date" id="lv_date" style="margin-bottom:8px">
+    <select id="lv_type" style="margin-bottom:8px">
+      <option value="Sick">Sick (MC)</option><option value="Emergency">Emergency</option><option value="Authorized">Authorized</option>
+    </select>
+    <input id="lv_reason" placeholder="Sebab / keterangan" style="margin-bottom:8px">
+    <input type="file" id="lv_mc" accept=".pdf,.jpg,.jpeg,.png" style="margin-bottom:10px">
+    <button class="btn" id="lv_go">Hantar Permohonan</button>
+    <p id="lv_msg" class="muted" style="margin-top:8px"></p>
+  </div>
+  <div class="card tblcards"><h3>Status Cuti Saya</h3><div id="leaves"></div></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="/js/csrf.js"></script><script src="/js/ui.js"></script><script src="/js/student.js"></script></body></html>

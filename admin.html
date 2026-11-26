@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="ms"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eHadir — Admin</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css?v=2026-11-25"><meta name="theme-color" content="#2160a5"></head><body>
+<div class="dash">
+  <aside class="sidebar">
+    <div class="logo">e<em>H</em>adir</div>
+    <div class="role">Papan Admin</div>
+    <button class="navbtn on" data-sec="a-over"><span class="ic"><i data-lucide="layout-dashboard"></i></span><span class="lbl"><b class="lf">Ringkasan</b><b class="ls">Ringkasan</b></span></button>
+    <button class="navbtn" data-sec="a-crit"><span class="ic"><i data-lucide="shield-alert"></i></span><span class="lbl"><b class="lf">Pelajar Kritikal</b><b class="ls">Kritikal</b></span></button>
+    <button class="navbtn" data-sec="a-sig"><span class="ic"><i data-lucide="radar"></i></span><span class="lbl"><b class="lf">Isyarat Penipuan</b><b class="ls">Penipuan</b></span></button>
+    <button class="navbtn" data-sec="a-cls"><span class="ic"><i data-lucide="school"></i></span><span class="lbl"><b class="lf">Kelas</b><b class="ls">Kelas</b></span></button>
+    <button class="navbtn" data-sec="a-cal"><span class="ic"><i data-lucide="calendar-days"></i></span><span class="lbl"><b class="lf">Kalendar Kelas</b><b class="ls">Kalendar</b></span></button>
+    <button class="navbtn" data-sec="a-log"><span class="ic"><i data-lucide="scroll-text"></i></span><span class="lbl"><b class="lf">Log Aktiviti</b><b class="ls">Log</b></span></button>
+    <button class="navbtn" data-sec="a-ann"><span class="ic"><i data-lucide="megaphone"></i></span><span class="lbl"><b class="lf">Pengumuman</b><b class="ls">Pengumuman</b></span></button>
+    <button class="navbtn" data-sec="a-users"><span class="ic"><i data-lucide="users"></i></span><span class="lbl"><b class="lf">Pengguna &amp; Kumpulan</b><b class="ls">Pengguna</b></span></button>
+    <button class="navbtn" data-sec="a-leave"><span class="ic"><i data-lucide="cloud-sun-rain"></i></span><span class="lbl"><b class="lf">Cuti</b><b class="ls">Cuti</b></span> <em id="lv_badge" style="display:none" class="navbadge"></em></button>
+    <button class="navbtn" data-sec="a-report"><span class="ic"><i data-lucide="file-text"></i></span><span class="lbl"><b class="lf">Laporan</b><b class="ls">Laporan</b></span></button>
+    <button class="navbtn" data-sec="a-set"><span class="ic"><i data-lucide="settings"></i></span><span class="lbl"><b class="lf">Tetapan Sekolah</b><b class="ls">Tetapan</b></span></button>
+    <div class="spacer"></div>
+    <div class="userbox"><b id="aname"></b><a href="#" id="logout"><i data-lucide="log-out"></i>Keluar</a></div>
+  </aside>
+  <div class="dashmain">
+    <div class="pagehead"><h2>Pusat Kawalan eHadir</h2><span class="when" id="adate"></span></div>
+
+    <section class="sec on" id="sec-a-over">
+      <div id="chain" class="card chain"><div class="skel" style="height:64px;border-radius:12px"></div></div>
+      <div class="sc" id="stats"><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div></div>
+      <div class="datacard"><h3><i data-lucide="map"></i> Papan status kehadiran harian</h3>
+        <div class="row" style="gap:10px;margin-bottom:12px">
+          <label class="muted">Tarikh <input type="date" id="bd_date"></label>
+          <select id="bd_cls" style="max-width:220px"><option value="">Semua kelas</option></select>
+          <span class="grow"></span><span class="muted" id="bd_msg"></span>
+        </div>
+        <div class="sc" id="bd_cards"><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div><div class="s skel"></div></div>
+        <p class="muted" style="font-size:.72rem;margin-top:8px">Klik kad untuk senarai nama. Hadir + Belum + Tidak Hadir + MC = jumlah pelajar kelas bersesi pada tarikh ini.</p>
+        <div id="bd_list" style="margin-top:10px"></div>
+        <div class="chartrow">
+          <div class="chartcard"><div class="chartcap">Agihan status hari ini</div><div class="chartbox"><canvas id="ch_donut"></canvas></div></div>
+          <div class="chartcard"><div class="chartcap">Peratus hadir mengikut kelas</div><div class="chartbox"><canvas id="ch_bars"></canvas></div></div>
+        </div>
+      </div>
+      <div class="datacard" id="nfcard">
+        <button type="button" class="nfh" id="nf_toggle" aria-expanded="false">
+          <span class="ic"><i data-lucide="users"></i></span>
+          <b id="nf_count">–</b>
+          <span class="t">Kelas belum penuh hari ini — klik untuk senarai</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </button>
+        <div id="nf_list" hidden></div>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-a-crit">
+      <div class="datacard tblcards"><h3><i data-lucide="shield-alert"></i> Pelajar kritikal <button class="btn sm" id="cp_pdf" style="float:right"><i data-lucide="file-text"></i> Jana PDF</button></h3>
+        <div class="tbar">
+          <div class="sbox"><i data-lucide="search"></i><input id="c_q" placeholder="Cari nama, @user, kelas atau sebab…"></div>
+          <span class="count muted" id="c_count"></span>
+          <div class="tf">
+            <select id="cr_cls"><option value="">Semua kelas</option></select>
+            <select id="cr_th">
+            <option value="80">Kritikal: bawah 80%</option>
+            <option value="60">Kritikal: bawah 60%</option>
+            <option value="40">Kritis melampau: bawah 40%</option>
+            </select>
+          </div>
+        </div>
+        <p class="muted" style="margin-bottom:8px">Dikira mengikut sesi kelas masing-masing (hadir + cuti dikira)</p><div id="crit"></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-sig">
+      <div class="datacard"><h3><i data-lucide="radar"></i> Isyarat penyalahgunaan</h3><p class="muted" style="margin-bottom:8px">GPS ketepatan rendah / jarak dekat had geofence (100 m+)</p><div id="sig"></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-cls">
+      <div class="datacard tblcards"><h3><i data-lucide="school"></i> Jadual Kelas</h3>
+        <p class="muted" style="margin-bottom:8px">Klik <i data-lucide="chevron-down" style="width:14px;height:14px;vertical-align:-2px"></i> untuk senarai pelajar + kehadiran hari ini, atau <i data-lucide="pencil" style="width:14px;height:14px;vertical-align:-2px"></i> untuk edit / log masuk sebagai guru.</p>
+        <table id="cls2" class="clstbl"><tr><th>Nama Kelas</th><th>Pengajar</th><th>Kumpulan</th><th>Jumlah Pelajar</th><th aria-label="Tindakan"></th></tr></table>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-a-cal">
+      <div class="datacard" data-kalendar></div>
+    </section>
+    <dialog id="ev_dlg"></dialog>
+
+    <dialog class="sheet" id="cls_dlg">
+      <div class="sheetgrip"></div>
+      <b class="sheetttl" id="cd_ttl"></b>
+      <div id="cd_menu" class="menuopts">
+        <button type="button" class="btn ghost" id="cd_edit"><span class="ic"><i data-lucide="pencil"></i></span> Edit Maklumat</button>
+        <button type="button" class="btn ghost" id="cd_imp"><span class="ic"><i data-lucide="log-in"></i></span> <span>Log Masuk Sebagai <b id="cd_teacher"></b></span></button>
+        <p class="muted" style="font-size:.72rem" id="cd_impnote">Semua tindakan anda direkodkan dalam Log Aktiviti.</p>
+      </div>
+      <div id="cd_form" hidden>
+        <label class="fl">Nama kelas <input id="cd_name"></label>
+        <label class="fl">Pengajar <select id="cd_teacher_sel"></select></label>
+        <label class="fl">Kumpulan <select id="cd_batch"><option value="">— tiada —</option></select></label>
+        <div class="row" style="margin-top:14px"><button type="button" class="btn ghost grow" id="cd_cancel">Batal</button><button type="button" class="btn grow" id="cd_save">Simpan</button></div>
+      </div>
+    </dialog>
+
+    <dialog class="sheet" id="usr_dlg">
+      <div class="sheetgrip"></div>
+      <b class="sheetttl" id="ud_ttl">Tambah pengguna</b>
+      <div id="ud_form">
+        <label class="fl">Peranan <select id="uf_role"><option value="student">Pelajar</option><option value="teacher">Guru</option><option value="admin">Admin</option></select></label>
+        <label class="fl">Nama penuh <input id="uf_name" placeholder="Nama penuh"></label>
+        <label class="fl">Username <input id="uf_un" placeholder="Username"></label>
+        <label class="fl">Kata laluan <input id="uf_pw" placeholder="Kosongkan = tidak berubah (guna baharu: dijana automatik)"></label>
+        <label class="fl">No. kad pengenalan / matrikulasi <input id="uf_ic" placeholder="No. KP / matrikulasi"></label>
+        <label class="fl">Jantina <select id="uf_gender"><option value="">Jantina (pilihan)</option><option>Lelaki</option><option>Perempuan</option></select></label>
+        <label class="fl">Emel <input id="uf_email" type="email" placeholder="Emel"></label>
+        <label class="fl">No. telefon pelajar <input id="uf_phone" placeholder="Telefon pelajar"></label>
+        <label class="fl">Nama penjaga <input id="uf_gn" placeholder="Nama penjaga"></label>
+        <label class="fl">No. telefon penjaga <input id="uf_pc" placeholder="Telefon penjaga"></label>
+        <label class="fl">Kumpulan <select id="uf_batch"></select></label>
+        <div class="row" style="margin-top:14px"><button type="button" class="btn ghost grow" id="uf_cancel">Batal</button><button type="button" class="btn grow" id="uf_save">Simpan</button></div>
+      </div>
+    </dialog>
+
+    <dialog class="sheet" id="bat_dlg">
+      <div class="sheetgrip"></div>
+      <b class="sheetttl" id="bd2_ttl">Tambah kumpulan</b>
+      <label class="fl">Nama kumpulan <input id="bf_name" placeholder="Contoh: PPO 2026"></label>
+      <p class="muted" style="font-size:.72rem" id="bf_note"></p>
+      <div class="row" style="margin-top:14px"><button type="button" class="btn ghost grow" id="bf_cancel">Batal</button><button type="button" class="btn grow" id="bf_save">Simpan</button></div>
+    </dialog>
+
+    <section class="sec" id="sec-a-log">
+      <div class="datacard"><h3><i data-lucide="scroll-text"></i> Log aktiviti <span class="badge ok">append-only · rantaian hash</span></h3>
+        <div class="tbar" id="lg_tbar">
+          <label class="dr">dari <input type="date" id="lg_from"></label>
+          <label class="dr">ke <input type="date" id="lg_to"></label>
+          <select id="lg_user" class="tf" style="max-width:170px"><option value="">Semua pengguna</option></select>
+          <select id="lg_action" class="tf" style="max-width:170px"><option value="">Semua tindakan</option></select>
+          <span class="acts"><span class="muted" id="lg_msg" style="font-size:.72rem;align-self:center"></span>
+          <button type="button" class="btn sm" id="lg_pdf"><i data-lucide="file-text"></i> Jana PDF</button></span>
+        </div>
+        <div id="logs"></div>
+        <div class="row" style="margin-top:12px"><button class="btn ghost" id="prev"><i data-lucide="arrow-left"></i> Sebelum</button><span id="pg" class="muted grow"></span><button class="btn ghost" id="next">Seterus <i data-lucide="arrow-right"></i></button></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-ann">
+      <div class="datacard composer"><h3><i data-lucide="megaphone"></i> Siarkan pengumuman</h3>
+        <input id="at" placeholder="Tajuk" style="margin-bottom:10px"><textarea id="ab" rows="3" placeholder="Mesej" style="margin-bottom:10px"></textarea>
+        <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <select id="an_aud" style="max-width:200px"><option value="student">Pelajar</option><option value="teacher">Guru</option><option value="all">Pelajar &amp; Guru</option></select>
+          <label class="dr">mula <input type="datetime-local" id="an_start"></label>
+          <label class="dr">tamat <input type="datetime-local" id="an_end"></label>
+        </div>
+        <p style="margin-bottom:10px" id="an_quick"></p>
+        <button class="btn" id="apost"><i data-lucide="send"></i> Siarkan</button> <span id="an_msg" class="muted"></span>
+      </div>
+      <div class="datacard tblcards"><h3><i data-lucide="list"></i> Senarai pengumuman</h3>
+        <div class="tbar">
+          <div class="sbox"><i data-lucide="search"></i><input id="an_q" placeholder="Cari tajuk atau mesej…"></div>
+          <span class="count muted" id="an_count"></span>
+          <div class="tf"><select id="an_st"><option value="">Semua status</option><option>Aktif</option><option>Dijadualkan</option><option>Tamat Tempoh</option></select></div>
+        </div>
+        <div id="an_list"></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-users">
+      <div class="datacard tblcards"><h3><i data-lucide="users"></i> Semua pengguna <button class="btn sm" id="u_new" style="float:right"><i data-lucide="user-plus"></i> Tambah</button></h3>
+        <div class="tbar" id="u_tbar">
+          <div class="sbox"><i data-lucide="search"></i><input id="u_q" placeholder="Cari nama, @user atau kumpulan…"></div>
+          <span class="count muted" id="u_count"></span>
+          <div class="tf">
+            <select id="u_role"><option value="">Semua peranan</option><option value="student">Pelajar</option><option value="teacher">Guru</option><option value="admin">Admin</option></select>
+            <select id="u_batch"><option value="">Semua kumpulan</option></select>
+          </div>
+        </div>
+        <div id="userlist"></div></div>
+      <div class="datacard"><h3><i data-lucide="file-spreadsheet"></i> Import pelajar dari Excel <button class="btn sm ghost tpl" data-tpl="students" style="float:right"><i data-lucide="download"></i> Muat Turun Template</button></h3>
+        <p class="muted" style="margin-bottom:8px">Lajur: <span class="mono">name, username, password, ic, gender, email, phone, guardian_name, parent_contact, class, batch</span> — baris pertama = kepala. Medan ic/gender/email/phone/guardian_name adalah pilihan.</p>
+        <input type="file" id="xl_stud" accept=".xlsx,.xls,.csv" style="margin-bottom:10px">
+        <button class="btn" id="xl_stud_go">Import</button> <span id="xl_stud_msg" class="muted"></span>
+        <div id="xl_stud_err"></div></div>
+      <div class="datacard"><h3><i data-lucide="file-spreadsheet"></i> Import guru dari Excel <button class="btn sm ghost tpl" data-tpl="teachers" style="float:right"><i data-lucide="download"></i> Muat Turun Template</button></h3>
+        <p class="muted" style="margin-bottom:8px">Lajur: <span class="mono">name, username, password</span></p>
+        <input type="file" id="xl_teach" accept=".xlsx,.xls,.csv" style="margin-bottom:10px">
+        <button class="btn" id="xl_teach_go">Import</button> <span id="xl_teach_msg" class="muted"></span>
+        <div id="xl_teach_err"></div></div>
+      <div class="datacard"><h3><i data-lucide="file-spreadsheet"></i> Import kelas dari Excel <button class="btn sm ghost tpl" data-tpl="classes" style="float:right"><i data-lucide="download"></i> Muat Turun Template</button></h3>
+        <p class="muted" style="margin-bottom:8px">Lajur: <span class="mono">class, teacher_username</span></p>
+        <input type="file" id="xl_class" accept=".xlsx,.xls,.csv" style="margin-bottom:10px">
+        <button class="btn" id="xl_class_go">Import</button> <span id="xl_class_msg" class="muted"></span>
+        <div id="xl_class_err"></div></div>
+      <div class="datacard"><h3><i data-lucide="file-spreadsheet"></i> Import takwim waktu (Excel) <button class="btn sm ghost tpl" data-tpl="takwim" style="float:right"><i data-lucide="download"></i> Muat Turun Template</button></h3>
+        <p class="muted" style="margin-bottom:8px">Lajur: <span class="mono">class, day, hour, subject</span></p>
+        <input type="file" id="xl_tak" accept=".xlsx,.xls,.csv" style="margin-bottom:10px">
+        <button class="btn" id="xl_tak_go">Import</button> <span id="xl_tak_msg" class="muted"></span>
+        <div id="xl_tak_err"></div></div>
+      <div class="datacard tblcards"><h3><i data-lucide="layers"></i> Kumpulan pelajar (batch) <button class="btn sm ghost tpl" data-tpl="batches" style="float:right"><i data-lucide="download"></i> Muat Turun Template</button></h3>
+        <div class="tbar" id="b_tbar">
+          <div class="sbox"><i data-lucide="search"></i><input id="b_q" placeholder="Cari nama kumpulan…"></div>
+          <span class="count muted" id="b_count"></span>
+        </div>
+        <div id="blist"></div>
+        <div class="row" style="margin-top:10px"><button class="btn ghost" id="b_new"><i data-lucide="plus"></i> Tambah Kumpulan</button></div>
+        <p class="muted" style="margin-top:8px;font-size:.74rem">Kumpulan diimport melalui lajur <span class="mono">batch</span> pada templat pelajar.</p></div>
+    </section>
+
+    <section class="sec" id="sec-a-leave">
+      <div class="datacard tblcards"><h3><i data-lucide="cloud-sun-rain"></i> Semua permohonan cuti</h3><div id="leavelist"></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-report">
+      <div class="datacard"><h3><i data-lucide="file-text"></i> Laporan kehadiran kelas</h3>
+        <div class="tbar">
+          <span class="count muted" id="rp_count"></span>
+          <div class="tf">
+            <select id="rp_cls"></select>
+            <label class="dr">dari <input type="date" id="rp_from"></label>
+            <label class="dr">hingga <input type="date" id="rp_to"></label>
+          </div>
+          <div class="acts">
+            <button class="btn ghost" id="rp_go"><i data-lucide="refresh-cw"></i> Jana</button>
+            <a class="btn ghost" id="rp_csv" href="#" style="text-decoration:none"><i data-lucide="download"></i> CSV</a>
+            <button class="btn" id="rp_pdf"><i data-lucide="file-text"></i> Jana PDF</button>
+          </div>
+        </div>
+        <div class="legend"><span class="lg ch">H</span> hadir <span class="lg cc">C</span> cuti <span class="lg cx">−</span> ponteng</div>
+        <span id="rp_msg" class="muted" style="font-size:.75rem"></span>
+        <div id="rp_out"></div></div>
+    </section>
+
+    <section class="sec" id="sec-a-set">
+      <div class="datacard"><h3><i data-lucide="settings"></i> Identiti sekolah (kepala laporan &amp; halaman login)</h3>
+        <div class="grid2">
+          <label class="fl">Nama sekolah<input id="org_name" placeholder="Contoh: Kolej Vokasional Seri Indera"></label>
+          <label class="fl">Moto<input id="org_motto" placeholder="Contoh: Berilmu, Berkemahiran, Berjaya"></label>
+        </div>
+        <div class="row" style="gap:14px;align-items:flex-start;margin-top:6px">
+          <div id="logo_box" class="logoBox"><span class="muted" id="logo_ph"><i data-lucide="image"></i> Tiada logo</span><img id="org_pv" style="display:none;max-height:70px;max-width:180px" alt="logo sekolah"></div>
+          <div class="grow">
+            <input type="file" id="org_logo" accept=".png,.jpg,.jpeg" style="margin-bottom:10px">
+            <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
+              <button class="btn" id="org_save"><i data-lucide="save"></i> Simpan</button>
+              <button class="btn red ghost" id="org_logodel" style="display:none"><i data-lucide="trash-2"></i> Buang logo</button>
+              <span id="org_msg" class="muted"></span>
+            </div>
+            <p class="muted" style="font-size:.72rem;margin-top:8px">PNG / JPG · maks 2 MB · pratilihat serta-merta sebelum disimpan</p>
+          </div>
+        </div></div>
+    </section>
+  </div>
+</div>
+<script src="/vendor/xlsx.full.min.js"></script>
+<script src="/vendor/jspdf.umd.min.js"></script>
+<script src="/vendor/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module">import aa from"https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/+esm";window.autoAnimate=aa;</script>
+<script src="/js/csrf.js"></script><script src="/js/ui.js"></script><script src="/js/pdf.js"></script><script src="/js/templates.js"></script><script src="/js/calendar.js?v=2026-11-21"></script><script src="/js/admin.js"></script><script src="/js/admin2.js?v=2026-11-25"></script></body></html>
